@@ -2,7 +2,7 @@ FIBER_C_BASE=third_party/fiber-c
 LIBMPROMPT_BASE=third_party/libmprompt
 LIBMPEFF=$(LIBMPROMPT_BASE)/out/release/libmpeff.a
 LIBHANDLER_BASE=third_party/libhandler
-LIBHANDLER=$(LIBHANDLER_BASE)/out/$(CC)-amd64-pc-linux-gnu/release/libhandler.a
+LIBHANDLER=$(LIBHANDLER_BASE)/out/$(CC)-amd64-pc-linux-gnu/release/libhandler.a # NOTE: the -amd64-pc-linux-gnu is hardcoded for my machine. You may need to adapt it to your platform.
 LIBSEFF_BASE=third_party/libseff
 LIBSEFF=$(LIBSEFF_BASE)/output/lib/libseff.a
 
@@ -81,3 +81,9 @@ bench-sieve: sieve
 clean:
 	rm -f *.a *.o
 	rm -f *.out
+
+.PHONY: dist-clean
+dist-clean: clean
+	rm -rf $(LIBMPROMPT_BASE)/out
+	rm -rf $(LIBHANDLER_BASE)/out
+	rm -rf $(LIBSEFF_BASE)/output
