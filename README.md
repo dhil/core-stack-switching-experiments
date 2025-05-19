@@ -1,2 +1,4 @@
-# core-stack-switching-experiments
-some preliminary experiments with core stack switching implementation techniques
+# Core stack switching experiments
+
+Some experiments with segmented stacks, virtual memory mapped stacks,
+and stack copying.

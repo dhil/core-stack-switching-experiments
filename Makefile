@@ -8,12 +8,12 @@ LIBSEFF=$(LIBSEFF_BASE)/output/lib/libseff.a
 
 CC=clang-21
 CXX=clang++-21
-CFLAGS=-Wno-unknown-attributes -I$(FIBER_C_BASE)/inc -std=c23
+CFLAGS=-Wno-unknown-attributes -I$(FIBER_C_BASE)/inc -std=c23 -O3
 LFLAGS=-fuse-ld=mold
 LIBMPROMPT_LFLAGS=-flto
 
 .PHONY: all
-all: itersum
+all: itersum treesum sieve
 
 $(LIBMPEFF): $(LIBMPROMPT_BASE)
 	cd $(LIBMPROMPT_BASE); \
@@ -52,6 +52,30 @@ treesum: $(FIBER_C_BASE)/examples/treesum.c libmprompt_fiber.o libhandler_fiber.
 	$(CC) $(LIBMPROMPT_LFLAGS) $(LFLAGS) $(CFLAGS) libmprompt_fiber.o $(FIBER_C_BASE)/examples/treesum.c -o treesum_libmprompt.out $(LIBMPEFF)
 	$(CC) $(LFLAGS) $(CFLAGS) libhandler_fiber.o $(FIBER_C_BASE)/examples/treesum.c -o treesum_libhandler.out $(LIBHANDLER)
 	$(CC) $(LFLAGS) $(CFLAGS) libseff_fiber.o $(FIBER_C_BASE)/examples/treesum.c -o treesum_libseff.out $(LIBSEFF)
+
+.PHONY: sieve
+sieve: $(FIBER_C_BASE)/examples/sieve.c libmprompt_fiber.o libhandler_fiber.o libseff_fiber.o
+	$(CC) $(LIBMPROMPT_LFLAGS) $(LFLAGS) $(CFLAGS) libmprompt_fiber.o $(FIBER_C_BASE)/examples/sieve.c -o sieve_libmprompt.out $(LIBMPEFF)
+	$(CC) $(LFLAGS) $(CFLAGS) libhandler_fiber.o $(FIBER_C_BASE)/examples/sieve.c -o sieve_libhandler.out $(LIBHANDLER)
+	$(CC) $(LFLAGS) $(CFLAGS) libseff_fiber.o $(FIBER_C_BASE)/examples/sieve.c -o sieve_libseff.out $(LIBSEFF)
+
+.PHONY: bench-itersum
+bench-itersum: itersum
+	hyperfine -L N 10000 './itersum_libmprompt.out {N}' './itersum_libhandler.out {N}' './itersum_libseff.out {N}'
+	hyperfine -L N 100000 './itersum_libmprompt.out {N}' './itersum_libhandler.out {N}' './itersum_libseff.out {N}'
+	hyperfine -L N 1000000 './itersum_libmprompt.out {N}' './itersum_libhandler.out {N}' './itersum_libseff.out {N}'
+
+.PHONY: bench-treesum
+bench-treesum: treesum
+	hyperfine -L N 21 './treesum_libmprompt.out {N}' './treesum_libhandler.out {N}' './treesum_libseff.out {N}'
+	hyperfine -L N 22 './treesum_libmprompt.out {N}' './treesum_libhandler.out {N}' './treesum_libseff.out {N}'
+	hyperfine -L N 23 './treesum_libmprompt.out {N}' './treesum_libhandler.out {N}' './treesum_libseff.out {N}'
+
+.PHONY: bench-sieve
+bench-sieve: sieve
+	hyperfine -L N 1000 './sieve_libmprompt.out -q {N}' './sieve_libhandler.out -q {N}' './sieve_libseff.out -q {N}'
+	hyperfine -L N 4000 './sieve_libmprompt.out -q {N}' './sieve_libhandler.out -q {N}' './sieve_libseff.out -q {N}'
+	hyperfine -L N 8000 './sieve_libmprompt.out -q {N}' './sieve_libhandler.out -q {N}' './sieve_libseff.out -q {N}'
 
 .PHONY: clean
 clean:
