@@ -1,0 +1,12 @@
+[submodule "third_party/fiber-c"]
+	path = third_party/fiber-c
+	url = git@github.com:wasmfx/fiber-c.git
+[submodule "third_party/libmprompt"]
+	path = third_party/libmprompt
+	url = git@github.com:koka-lang/libmprompt.git
+[submodule "third_party/libhandler"]
+	path = third_party/libhandler
+	url = git@github.com:koka-lang/libhandler.git
+[submodule "third_party/libseff"]
+	path = third_party/libseff
+	url = git@github.com:effect-handlers/libseff.git
